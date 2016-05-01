@@ -6,13 +6,14 @@ import socket
 import struct
 
 # Find the server path
-VimCoServerPath = vim.eval('expand("<sfile>:h")') + '/VimCoServer.py'
+VimCoServerPath = vim.eval('expand("<sfile>:h")') + '/vimCoServer.py'
 
 class VimCoProtocol:
-    __slots__ = 'vimCo'
+    __slots__ = 'vimCo', 'runFlag'
 
     def __init__(self, vimCo):
         self.vimCo = vimCo
+        self.runFlag = True
 
     def send(self, data):
         # pack length of data along with it
@@ -37,11 +38,14 @@ class VimCoProtocol:
             data += packet
         return data
 
+    def stop(self):
+        self.runFlag = False
+
     def run(self):
         begin = time.time()
         messageLen = None
         data = ''
-        while (True):
+        while self.runFlag is True:
             self.vimCo.connection.settimeout(0.001)
 
             if messageLen is None:
@@ -125,6 +129,12 @@ class VimCoClient:
     def __init__(self):
         self.protocol = VimCoProtocol(self)
         self.isConnected = False
+        self.connection = None
+        self.addr = None
+        self.port = None
+        self.name = None
+        self.vim_buffer = None
+        self.protocol_thread = None
 
     def start(self, arg1=False, arg2=False, arg3=False, arg4=False):
         default_name = vim.eval('VimCo_default_name')
@@ -206,6 +216,7 @@ class VimCoClient:
         if self.connection is not None:
             self.connection.close()
             self.isConnected = False
+            self.protocol.stop()
             print 'Successfully disconnected from server!'
         else:
             print "ERROR: VimCo must be running to use this command"
