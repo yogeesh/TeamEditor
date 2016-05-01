@@ -195,7 +195,7 @@ class VimCoClient:
             print 'Connecting...'
             self.connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             try:
-                self.connection.connect((socket.gethostbyname(addr), port))
+                self.connection.connect((addr, port))
             except socket.error:
                 print 'ERROR: Unable to connect to server'
                 return
