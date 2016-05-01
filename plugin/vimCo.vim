@@ -43,6 +43,7 @@ python << endOfPython
 # Supported: python 2.7
 ###
 from vimCoClient import *
-    vimCo = VimCoClient()
+
+vimCo = VimCoClient()
 
 endOfPython
