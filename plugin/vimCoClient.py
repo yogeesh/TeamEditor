@@ -194,8 +194,11 @@ class VimCoClient:
             self.vim_buffer = []
             print 'Connecting...'
             self.connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.connection.connect((socket.gethostbyname(addr), port))
-
+            try:
+                self.connection.connect((socket.gethostbyname(addr), port))
+            except socket.error:
+                print 'ERROR: Unable to connect to server'
+                return
             self.isConnected = True
             self.send(self.vimCo.name)
 
