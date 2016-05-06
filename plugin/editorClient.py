@@ -186,7 +186,7 @@ class EditorModel:
                         'Name contains illegal characters. Only numbers, letters, underscores, and dashes allowed. ' + \
                         'Please try a different name')
                 if data['message_type'] == 'connect_success':
-                    self.ui.setupCursorColors()
+                    self.ui.setCursorColors()
                     if 'buffer' in data.keys():
                         self.prevBuffer = data['buffer']
                         self.ui.setCurrentBuffer(self.prevBuffer)

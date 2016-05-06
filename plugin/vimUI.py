@@ -14,7 +14,7 @@ class VimUI(IEditorView):
     def setCursor(self, x, y):
         vim.current.window.cursor = (y, x)
 
-    def setupCursorColors(self):
+    def setCursorColors(self):
         vim.command('call SetCursorColors()')
 
     def getCurrentBuffer(self):
