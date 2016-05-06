@@ -58,7 +58,7 @@ class EditorModel:
             addr = self.addr
         """
         if not addr or not port or not name:
-            self.ui.printError('Wrong syntax. Usage: ' + self.ui.getApplicationName() + \
+            self.ui.printError('Wrong syntax. Usage: ' + self.platform.getApplicationName() + \
                                ' connect <server address> <port> <name>')
             return
         port = int(port)
@@ -103,7 +103,7 @@ class EditorModel:
             self.controller.stop()
             self.ui.printMessage('Successfully disconnected from the server!')
         else:
-            self.ui.printError(self.ui.getApplicationName() + " must be running to use this command")
+            self.ui.printError(self.platform.getApplicationName() + " must be running to use this command")
 
     def __addUsers(self, users):
         map(self.cursorManager.addCursor, users)
@@ -262,7 +262,7 @@ class EditorController:
             elif default_port != '0' and default_name != '0':
                 self.editorModel.createServer(default_port, default_name)
             else:
-                self.ui.printMessage("usage :" + self.ui.getApplicationName() + \
+                self.ui.printMessage("usage :" + self.platform.getApplicationName() + \
                                      " share [port" + default_port_string + \
                                      "] [name" + default_name_string + "]")
         elif arg1 == 'connect':
@@ -273,7 +273,7 @@ class EditorController:
             elif arg2 and default_port != '0' and default_name != '0':
                 self.editorModel.connect(arg2, default_port, default_name)
             else:
-                self.ui.printMessage("usage :" + self.ui.getApplicationName() + \
+                self.ui.printMessage("usage :" + self.platform.getApplicationName() + \
                                      " connect [host address / 'localhost'] [port" + \
                                      default_port_string + "] [name" + default_name_string + "]")
         elif arg1 == 'disconnect':
@@ -282,7 +282,7 @@ class EditorController:
             self.editorModel.disconnect()
             self.ui.quit()
         else:
-            self.ui.printMessage("usage: " + self.ui.getApplicationName() + " [share] [connect] [disconnect] [quit]")
+            self.ui.printMessage("usage: " + self.platform.getApplicationName() + " [share] [connect] [disconnect] [quit]")
 
     def startDaemonThread(self):
         self.runFlag = True
