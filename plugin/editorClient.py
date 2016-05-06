@@ -5,28 +5,34 @@ import socket
 import struct
 
 class CursorManager:
+    __slots__ = 'nextCursorId', 'nextCursorColor', 'cursors', 'editorModel'
+
     def __init__(self, editorModel):
-        self.editorModel = editorModel
+        self.nextCursorId = 1
         self.reset()
+        self.editorModel = editorModel
 
     def reset(self):
-        self.nextCursorId = 1
         self.nextCursorColor = 1
         self.cursors = {}
 
-    def addCursor(self, cursorData):
-            if cursorData['name'] == self.editorModel.name:
-                self.cursors[cursorData['name']] = ('CursorUser', 99999)
+    def addCursor(self, name, x, y):
+            if name == self.editorModel.name:
+                self.cursors[name] = ('CursorUser', 99999)
             else:
-                self.cursors[cursorData['name']] = ('Cursor' + str(self.nextCursorColor), self.nextCursorId)
+                self.cursors[name] = ('Cursor' + str(self.nextCursorColor), self.nextCursorId)
                 self.nextCursorId += 1
                 self.nextCursorColor = (self.nextCursorId) % self.editorModel.ui.getNumberOfCursorColors()
-                self.editorModel.ui.addCursor(self.cursors[cursorData['name']][1], self.cursors[cursorData['name']][0],
-                                              cursorData['cursor']['x'], cursorData['cursor']['y'])
+                self.editorModel.ui.addCursor(self.cursors[name][1], self.cursors[name][0], x, y)
 
     def removeCursor(self, name):
         self.editorModel.ui.removeCursor(self.cursors[name][1])
         del (self.cursors[name])
+
+    def updateCursor(self, name, x, y):
+        self.editorModel.ui.removeCursor(self.cursors[name][1])
+        self.editorModel.ui.addCursor(self.cursors[name][1], self.cursors[name][0], x, y)
+
 
 class EditorModel:
     __slots__ = 'addr', 'port', 'name', 'prevBuffer', 'isConnected', 'connection', 'cursorManager', 'controller', 'ui'
@@ -97,7 +103,7 @@ class EditorModel:
         if self.connection is not None:
             for name in self.cursorManager.cursors.keys():
                 if name != self.name:
-                    self.cursorManager.removeCursor(name)
+                    self.ui.removeCursor(self.cursorManager.cursors[name][1])
             self.connection.close()
             self.isConnected = False
             self.controller.stop()
@@ -106,7 +112,10 @@ class EditorModel:
             self.ui.printError(self.platform.getApplicationName() + " must be running to use this command")
 
     def __addUsers(self, users):
-        map(self.cursorManager.addCursor, users)
+        map(self.__addUser, users)
+
+    def __addUser(self, userData):
+        self.cursorManager.addCursor(userData['name'], userData['cursor']['x'], userData['cursor']['y'])
 
     def __removeUser(self, name):
         self.cursorManager.removeCursor(name)
@@ -180,25 +189,27 @@ class EditorModel:
                 if data['message_type'] == 'error_newname_taken':
                     self.disconnect()
                     self.ui.printError('Name already in use. Please try a different name')
-                if data['message_type'] == 'error_newname_invalid':
+                elif data['message_type'] == 'error_newname_invalid':
                     self.disconnect()
                     self.ui.printError(
                         'Name contains illegal characters. Only numbers, letters, underscores, and dashes allowed. ' + \
                         'Please try a different name')
-                if data['message_type'] == 'connect_success':
+                elif data['message_type'] == 'connect_success':
                     self.ui.setCursorColors()
                     if 'buffer' in data.keys():
                         self.prevBuffer = data['buffer']
                         self.ui.setCurrentBuffer(self.prevBuffer)
                     self.__addUsers(data['users'])
                     self.ui.printMessage('Success! You\'re now connected [Port ' + str(self.port) + ']')
-                if data['message_type'] == 'user_connected':
+                elif data['message_type'] == 'user_connected':
                     self.__addUsers(data['user'])
                     self.ui.printMessage(data['user']['name'] + ' connected to this document')
-                if data['message_type'] == 'user_disconnected':
+                elif data['message_type'] == 'user_disconnected':
                     self.__removeUser(data['name'])
                     self.ui.printMessage(data['name'] + ' disconnected from this document')
-            if packet['type'] == 'update':
+                else:
+                    self.ui.printError('Received unknown message_type: ' + str(data['message_type']))
+            elif packet['type'] == 'update':
                 if 'buffer' in data.keys() and data['name'] != self.name:
                     b_data = data['buffer']
                     currentBuffer = self.ui.getCurrentBuffer()
@@ -210,6 +221,13 @@ class EditorModel:
                     for updated_user in data['updated_cursors']:
                         if self.name == updated_user['name'] and data['name'] != self.name:
                             self.ui.setCursor(updated_user['cursor']['x'], updated_user['cursor']['y'])
+
+                    for updated_user in data['updated_cursors']:
+                        if self.name != updated_user['name']:
+                            self.cursorManager.updateCursor(updated_user['name'],
+                                                            updated_user['cursor']['x'], updated_user['cursor']['y'])
+            else:
+                self.ui.printError('Received unknown packet type: ' + str(packet['type']))
             self.ui.redraw()
 
     def send(self, data):
