@@ -5,7 +5,7 @@ python import sys
 python import vim
 python sys.path.append(vim.eval('expand("<sfile>:h")'))
 
-com! -nargs=* VimCo py vimCo.start(<f-args>)
+com! -nargs=* VimCo py vimCo.execute(<f-args>)
 
 " --------------------------------
 "  Function(s)
@@ -42,8 +42,8 @@ python << endOfPython
 # Python starts from here.
 # Supported: python 2.7
 ###
-from vimCoClient import *
+from editorClient import *
 
-vimCo = VimCoClient()
+vimCo = EditorController()
 
 endOfPython
