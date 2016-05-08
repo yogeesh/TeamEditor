@@ -70,7 +70,7 @@ class vimServer:
                                     'type': 'message',
                                     'data': {
                                         'message_type': 'user_connected',
-                                        'user': client.toJson()
+                                        'user': client.to_json()
                                     }
                                 }
 
@@ -199,7 +199,7 @@ class vimServer:
         if 'cursor' in data.keys():
             client = self.clientManager.getClient(data['name'])
             client.updateCursor(data['cursor']['x'], data['cursor']['y'])
-            packet['data']['updated_cursors'] = [client.toJson()]
+            packet['data']['updated_cursors'] = [client.to_json()]
             del packet['data']['cursor']
 
         if 'buffer' in data.keys():
@@ -219,7 +219,7 @@ class Cursor:
         self.x = 1
         self.y = 1
 
-    def toJson(self):
+    def to_json(self):
         return {
             'x': self.x,
             'y': self.y
@@ -233,10 +233,10 @@ class Client:
         self.sock = sock
         self.cursor = Cursor()
 
-    def toJson(self):
+    def to_json(self):
         return {
             'name': self.name,
-            'cursor': self.cursor.toJson()
+            'cursor': self.cursor.to_json()
         }
 
     def updateCursor(self, x, y):
@@ -283,7 +283,7 @@ class ClientManager:
             del self.clients[client.name]
 
     def allClientsToJson(self):
-        return [client.toJson() for client in self.server.clientManager.clients.values()]
+        return [client.to_json() for client in self.server.clientManager.clients.values()]
 
     def updateCursors(self, data, c):
         result = []
@@ -305,7 +305,7 @@ class ClientManager:
                     client.cursor.x = max(1, client.cursor.x + data['change_x'])
                     updated = True
                 if updated:
-                    result.append(client.toJson())
+                    result.append(client.to_json())
         return result
 
         
