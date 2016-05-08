@@ -15,5 +15,6 @@ class VimPlatform(IPlatform):
         return vim.eval('VimCo_default_port')
 
     def runServer(self, port):
-        #vim.command(':silent execute "!' + VimCoServerPath + ' ' + port + ' &>/dev/null &"')
+        print(VimCoServerPath)
+        vim.command(':silent execute "!' + VimCoServerPath + ' ' + port + ' &>/dev/null &"')
         pass

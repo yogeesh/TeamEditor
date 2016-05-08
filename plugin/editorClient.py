@@ -316,7 +316,7 @@ class EditorController:
         messageLen = None
         data = ''
         while self.runFlag is True:
-            print "theard!"
+            print time.time()
             self.editorModel.connection.settimeout(0.01)    #10 ms
 
             if messageLen is None:
