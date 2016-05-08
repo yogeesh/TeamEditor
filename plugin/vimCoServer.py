@@ -154,7 +154,7 @@ class vimServer:
         data = ''
         while len(data) < n:
             try:
-                packet = sock.recv(n - len(self.data))
+                packet = sock.recv(n - len(data))
             except socket.timeout:
                 print('Timeout error occurred when receiving')
             except socket.error:

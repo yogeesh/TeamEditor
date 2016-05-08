@@ -251,7 +251,7 @@ class EditorModel:
         data = ''
         while len(data) < n:
             try:
-                packet = self.connection.recv(n - len(self.data))
+                packet = self.connection.recv(n - len(data))
             except socket.timeout:
                 self.ui.printError('Timeout error occurred when receiving')
                 break
