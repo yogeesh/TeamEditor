@@ -51,7 +51,7 @@ class EditorModel:
     def createServer(self, port, name):
         print('creating server')
         self.controller.platform.runServer(port)
-        time.sleep(1)
+        time.sleep(10)
         self.connect('localhost', port, name)
 
     def connect(self, addr, port, name):
@@ -76,12 +76,12 @@ class EditorModel:
             self.name = name
             self.prevBuffer = []
             self.cursorManager = CursorManager(self)
-            self.ui.printMessage('Connecting...')
+            #self.ui.printMessage('Connecting...')
             self.connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             try:
                 self.connection.connect((addr, port))
             except socket.error:
-                self.ui.printError('Unable to connect to server')
+                #self.ui.printError('Unable to connect to server')
                 return
             self.isConnected = True
             self.send(self.name)
