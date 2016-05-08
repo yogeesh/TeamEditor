@@ -1,3 +1,4 @@
+import vim
 from IEditorView import *
 
 class VimUI(IEditorView):
