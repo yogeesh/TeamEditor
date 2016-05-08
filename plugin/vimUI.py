@@ -1,4 +1,3 @@
-import vim
 from IEditorView import *
 
 class VimUI(IEditorView):
@@ -43,4 +42,4 @@ class VimUI(IEditorView):
                     str(cursorId + 3) + ')')
 
     def removeCursor(self, cursorId):
-        vim.command('call matchdelete(' + str(cursorId + 3) + ')')
+        vim.command(':call matchdelete(' + str(cursorId + 3) + ')')

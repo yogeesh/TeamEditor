@@ -1,4 +1,3 @@
-import vim
 from IPlatform import *
 
 # Find the server path
