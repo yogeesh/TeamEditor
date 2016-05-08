@@ -138,6 +138,9 @@ class EditorModel:
         d = self.__createUpdatePacket(d)
         data = json.dumps(d)
         self.send(self.connection, data)
+        #TODO debug
+        print('sent update: ' + data)
+        time.sleep(10)
 
     def __createUpdatePacket(self, d):
         currentBuffer = self.ui.getCurrentBuffer()
