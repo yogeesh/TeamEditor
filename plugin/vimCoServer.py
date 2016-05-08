@@ -50,7 +50,7 @@ class vimServer:
                         
                     #existing socket recieving data
                     else:
-                        data = recvData(socket)
+                        data = self.recvData(socket)
                         self.processRcvdMessage(socket, data)
 
                     #Checks if all connections are closed

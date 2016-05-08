@@ -54,7 +54,7 @@ class EditorModel:
 
     def createServer(self, port, name):
         self.controller.platform.runServer(port)
-        time.sleep(5)
+        time.sleep(1)
         self.connect('localhost', port, name)
 
     def connect(self, addr, port, name):
