@@ -253,7 +253,7 @@ class EditorModel:
             try:
                 packet = self.connection.recv(n - len(data))
             except socket.timeout:
-                self.ui.printError('Timeout error occurred when receiving')
+                #self.ui.printError('Timeout error occurred when receiving')
                 break
             except socket.error:
                 self.ui.printError('Socket error occurred when receiving')
@@ -322,8 +322,7 @@ class EditorController:
         messageLen = None
         data = ''
         while self.runFlag is True:
-            print time.time()
-            self.editorModel.connection.settimeout(0.01)    #10 ms
+            self.editorModel.connection.settimeout(1)    #10 ms
 
             if messageLen is None:
                 data = self.editorModel.recvall(4)
