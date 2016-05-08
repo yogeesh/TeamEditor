@@ -119,8 +119,6 @@ class EditorModel:
         map(self.__addUser, users)
 
     def __addUser(self, userData):
-        print(userData)
-        time.sleep(5)
         self.cursorManager.addCursor(userData['name'], userData['cursor']['x'], userData['cursor']['y'])
 
     def __removeUser(self, name):
@@ -210,12 +208,10 @@ class EditorModel:
                         self.prevBuffer = data['buffer']
                         self.ui.setCurrentBuffer(self.prevBuffer)
                     self.ui.printMessage('Success! You\'re now connected [Port ' + str(self.port) + ']')
-                    time.sleep(5)
                     self.__addUsers(data['users'])
                 elif data['message_type'] == 'user_connected':
                     self.ui.printMessage(data['user']['name'] + ' connected to this document')
-                    time.sleep(5)
-                    self.__addUsers(data['user'])
+                    self.__addUsers([data['user']])
                 elif data['message_type'] == 'user_disconnected':
                     self.__removeUser(data['name'])
                     self.ui.printMessage(data['name'] + ' disconnected from this document')
