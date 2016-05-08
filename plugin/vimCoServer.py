@@ -10,7 +10,7 @@ class vimServer:
     
     def __init__(self, port):
         self.buffer = []
-        self.clientManager = ClientManager()
+        self.clientManager = ClientManager(self)
 
         #Bind to server port and listen
         serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
