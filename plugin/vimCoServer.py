@@ -38,7 +38,7 @@ class vimServer:
                         tempSocket, addr = serverSocket.accept()
                         client = Client(str(tempSocket), self)
                         self.clientManager.addClient(client)
-                        print "Client joined!"
+                        print('Client ' + tempSocket + ' joined!')
 
                         d = {
                             'type': 'message',
@@ -51,7 +51,7 @@ class vimServer:
                         if self.clientManager.isMulti():
                             d['data']['buffer'] = self.buffer
 
-                        self.send(client.id, json.dumps(d))
+                        self.send(int(client.id), json.dumps(d))
 
                         d = {
                             'type': 'message',
@@ -61,7 +61,7 @@ class vimServer:
                             }
                         }
 
-                        self.broadcastData(client.id, d)
+                        self.broadcastData(int(client.id), d)
                         
                     #existing socket recieving data
                     else:
@@ -95,8 +95,9 @@ class vimServer:
         """
         obj_json = json.dumps(data)
         for id, client in self.clientManager.clients.iteritems():
-            if client.id != socketX or sendToSelf:
-                self.send(client.id, obj_json)
+            sock = int(client.id)
+            if sock != socketX or sendToSelf:
+                self.send(sock, obj_json)
 
         """
         #Ignoring 1st socket, as it is dedicated to serverSocket
