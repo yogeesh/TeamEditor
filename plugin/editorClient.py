@@ -248,21 +248,19 @@ class EditorModel:
 
     def recvall(self, sock, n):
         # Helper function to recv n bytes or return None if EOF is hit
-        """
         data = ''
         while len(data) < n:
             try:
                 packet = sock.recv(n - len(data))
             except socket.timeout:
-                print('Timeout error occurred when receiving')
+                #print('Timeout error occurred when receiving')
+                break
             except socket.error:
                 print('Socket error occurred when receiving')
                 break
             if not packet:
                 return None
             data += packet
-        """
-        data = sock.recv(n)
         print data
         return data
 
