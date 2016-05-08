@@ -38,6 +38,7 @@ class vimServer:
                         tempSocket, addr = serverSocket.accept()
 
                         if messageLen is None:
+                            data = self.recvall(socket, 4)
                             if len(data) == 4:
                                 messageLen = struct.unpack('>I', data)[0]
 
@@ -77,8 +78,8 @@ class vimServer:
                         
                     #existing socket recieving data
                     else:
-                        data = self.recvall(socket, 4)
                         if messageLen is None:
+                            data = self.recvall(socket, 4)
                             if len(data) == 4:
                                 messageLen = struct.unpack('>I', data)[0]
 
