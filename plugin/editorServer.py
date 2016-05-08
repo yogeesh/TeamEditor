@@ -4,24 +4,24 @@ import select
 import json
 import struct
 
-class vimServer:
+class EditorServer:
 
-    __slots__ = 'clientList', 'buffer', 'clientManager'
+    __slots__ = 'socketList', 'buffer', 'clientManager'
     
     def __init__(self, port):
         self.buffer = []
         self.clientManager = ClientManager(self)
 
         #Bind to server port and listen
-        serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        serverSocket.bind(("localhost", port))
-        serverSocket.listen(10)#supporting max 10 users
+        listenSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        listenSocket.bind(("localhost", port))
+        listenSocket.listen(10)#supporting max 10 users
         
-        self.clientList = [serverSocket]
-        self.acceptClients(serverSocket)
+        self.socketList = [listenSocket]
+        self.acceptClients(listenSocket)
 
 
-    def acceptClients(self, serverSocket):
+    def acceptClients(self, listenSocket):
         """
         Handling multiple clients
         """
@@ -30,27 +30,27 @@ class vimServer:
         while True:
             try:
                 readSocket, writeSocket, errorSocket = \
-                    select.select(self.clientList, [], [], 300)
+                    select.select(self.socketList, [], [], 300)
 
                 for socket in readSocket:
                     #new socket connection
-                    if socket == serverSocket:
-                        tempSocket, addr = serverSocket.accept()
-                        self.clientList.append(tempSocket)
+                    if socket == listenSocket:
+                        clientSocket, addr = listenSocket.accept()
+                        self.socketList.append(clientSocket)
 
                         if messageLen is None:
-                            data = self.recvall(tempSocket, 4)
+                            data = self.recvall(clientSocket, 4)
                             if len(data) == 4:
                                 messageLen = struct.unpack('>I', data)[0]
 
                         if messageLen is not None:
-                            data = self.recvall(tempSocket, messageLen)
+                            data = self.recvall(clientSocket, messageLen)
                             if len(data) == messageLen:
                                 name = str(data)
 
                                 #TODO: validate name
 
-                                client = Client(name, tempSocket, self)
+                                client = Client(name, clientSocket, self)
                                 self.clientManager.addClient(client)
                                 print('Client ' + client.name + ' joined!')
 
@@ -112,36 +112,8 @@ class vimServer:
             if client.name != clientX or sendToSelf:
                 self.send(client.sock, obj_json)
 
-        """
-        #Ignoring 1st socket, as it is dedicated to serverSocket
-        for socI in range(1, len(self.clientList)):
-            if self.clientList[socI] != socketX:
-                self.clientList[socI].sendall(data)
-        """
-
     def checkOpenSocketConnections(self):
         return True
-
-
-    """
-    def processRcvdMessage(self, socketX, data):
-        print data
-        pass
-
-    def recvData(self, socket):
-        msgLen = socket.recv(4)
-        msgLen = struct.unpack('>I', msgLen)[0]
-        return socket.recv(msgLen)
-
-    def createPacket(self, type, data):
-        packet = dict()
-        packet['type'] = type
-        packet['data'] = data
-        jSend = json.dumps(packet)
-        data = struct.pack('>I', len(jSend)) + jSend
-        print data
-        return data
-    """
 
     def send(self, sock, data):
         # pack length of data along with it
@@ -166,7 +138,6 @@ class vimServer:
             if not packet:
                 return None
             data += packet
-        #print data
         return data
 
 
@@ -260,14 +231,14 @@ class ClientManager:
     def hasClient(self, name):
         return self.clients.get(name)
 
-    def addClient(self, client):
-        self.clients[client.name] = client
-
     def getClient(self, name):
         try:
             return self.clients[name]
         except KeyError:
             raise Exception('Client ' + name + ' does not exist')
+
+    def addClient(self, client):
+        self.clients[client.name] = client
 
     def removeClient(self, client):
         if self.clients.get(client.name):
@@ -279,7 +250,7 @@ class ClientManager:
                 }
             }
             self.server.broadcastPacket(client.name, d)
-            print 'Client "{user_name}" Disconnected'.format(user_name=client.name)
+            print('Client ' + client.name + ' disconnected')
             del self.clients[client.name]
 
     def allClientsToJson(self):
@@ -299,8 +270,7 @@ class ClientManager:
                 if client.cursor.y == y_target and client.cursor.x > x_target:
                     client.cursor.x = max(1, client.cursor.x + data['change_x'])
                     updated = True
-                if client.cursor.y == y_target - 1 and client.cursor.x > x_target \
-                    and data['change_y'] == 1:
+                if client.cursor.y == y_target - 1 and client.cursor.x > x_target and data['change_y'] == 1:
                     client.cursor.y += 1
                     client.cursor.x = max(1, client.cursor.x + data['change_x'])
                     updated = True
@@ -310,4 +280,4 @@ class ClientManager:
 
         
 if __name__ == "__main__":
-    vimServer(int(sys.argv[1]))
+    EditorServer(int(sys.argv[1]))

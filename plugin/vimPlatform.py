@@ -2,7 +2,7 @@ import vim
 from IPlatform import *
 
 # Find the server path
-VimCoServerPath = vim.eval('expand("<sfile>:h")') + '/vimCoServer.py'
+serverPath = vim.eval('expand("<sfile>:h")') + '/editorServer.py'
 
 class VimPlatform(IPlatform):
     def getApplicationName(self):
@@ -15,4 +15,4 @@ class VimPlatform(IPlatform):
         return vim.eval('VimCo_default_port')
 
     def runServer(self, port):
-        vim.command(':silent execute "!python ' + VimCoServerPath + ' ' + port + ' &>/dev/null &"')
+        vim.command(':silent execute "!python ' + serverPath + ' ' + port + ' &>/dev/null &"')
