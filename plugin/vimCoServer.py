@@ -38,6 +38,7 @@ class vimServer:
                     #new socket connection
                     if socket == serverSocket:
                         tempSocket, addr = serverSocket.accept()
+                        self.clientList.append(tempSocket)
 
                         if messageLen is None:
                             data = self.recvall(tempSocket, 4)
