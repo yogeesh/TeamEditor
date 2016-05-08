@@ -47,6 +47,9 @@ class vimServer:
                             if len(data) == messageLen:
                                 name = str(data)
 
+                                # TODO: debug
+                                print('Name received: ' + name)
+
                                 #TODO: validate name
 
                                 client = Client(name, tempSocket, self)

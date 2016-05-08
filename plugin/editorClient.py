@@ -89,6 +89,9 @@ class EditorModel:
             self.isConnected = True
             self.send(self.name)
 
+            #TODO: debug
+            self.ui.printMessage('sent name')
+
             self.controller.startDaemonThread()
         elif (port != self.port) or (addr != self.addr):
             self.ui.printError('Different address/port already used. You need to restart to try new ones')
@@ -253,6 +256,7 @@ class EditorModel:
             try:
                 packet = self.connection.recv(n - len(data))
             except socket.timeout:
+                # TODO: debug
                 #self.ui.printError('Timeout error occurred when receiving')
                 break
             except socket.error:
@@ -322,7 +326,7 @@ class EditorController:
         messageLen = None
         data = ''
         while self.runFlag is True:
-            self.editorModel.connection.settimeout(1)    #10 ms
+            self.editorModel.connection.settimeout(0.01)    #10 ms
 
             if messageLen is None:
                 data = self.editorModel.recvall(4)
