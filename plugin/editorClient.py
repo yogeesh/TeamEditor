@@ -49,6 +49,7 @@ class EditorModel:
         self.ui = ui
 
     def createServer(self, port, name):
+        print('creating server')
         self.controller.platform.runServer(port)
         time.sleep(1)
         self.connect('localhost', port, name)
