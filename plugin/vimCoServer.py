@@ -166,7 +166,7 @@ class vimServer:
             if not packet:
                 return None
             data += packet
-        print data
+        #print data
         return data
 
 

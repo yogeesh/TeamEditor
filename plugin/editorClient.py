@@ -266,7 +266,7 @@ class EditorModel:
             if not packet:
                 return None
             data += packet
-        print data
+        #print data
         return data
 
 class EditorController:
