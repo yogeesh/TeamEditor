@@ -38,7 +38,7 @@ class vimServer:
                         tempSocket, addr = serverSocket.accept()
                         client = Client(str(tempSocket), self)
                         self.clientManager.addClient(client)
-                        print('Client ' + tempSocket + ' joined!')
+                        print('Client ' + str(tempSocket) + ' joined!')
 
                         d = {
                             'type': 'message',
