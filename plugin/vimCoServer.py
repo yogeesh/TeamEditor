@@ -32,6 +32,8 @@ class vimServer:
                 readSocket, writeSocket, errorSocket = \
                     select.select(self.clientList, [], [], 300)
 
+                print(readSocket)
+
                 for socket in readSocket:
                     #new socket connection
                     if socket == serverSocket:
