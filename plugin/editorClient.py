@@ -116,15 +116,14 @@ class EditorModel:
             self.ui.printError(self.platform.getApplicationName() + " must be running to use this command")
 
     def __addUsers(self, users):
+        print('__addUsers called')
+        time.sleep(5)
         map(self.__addUser, users)
 
     def __addUser(self, userData):
-        try:
-            self.cursorManager.addCursor(userData['name'], userData['cursor']['x'], userData['cursor']['y'])
-        except TypeError:
-            print('TypeError')
-            print(userData)
-            exit()
+        print(userData)
+        time.sleep(5)
+        self.cursorManager.addCursor(userData['name'], userData['cursor']['x'], userData['cursor']['y'])
 
     def __removeUser(self, name):
         self.cursorManager.removeCursor(name)
