@@ -33,7 +33,7 @@ class VimUI(IEditorView):
         vim.command(':redraw')
 
     def quit(self):
-        vim.command('q')
+        vim.command('q!')
 
     def getNumberOfCursorColors(self):
         return 11
