@@ -36,7 +36,7 @@ class vimServer:
                     #new socket connection
                     if socket == serverSocket:
                         tempSocket, addr = serverSocket.accept()
-                        client = Client(tempSocket, self)
+                        client = Client(str(tempSocket), self)
                         self.clientManager.addClient(client)
                         print "Client joined!"
 
@@ -44,7 +44,7 @@ class vimServer:
                             'type': 'message',
                             'data': {
                                 'message_type': 'connect_success',
-                                'name': client.id,
+                                'name': str(client.id),
                                 'users': self.clientManager.allClientsToJson()
                             }
                         }
