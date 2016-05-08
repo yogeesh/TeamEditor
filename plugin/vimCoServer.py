@@ -47,9 +47,6 @@ class vimServer:
                             if len(data) == messageLen:
                                 name = str(data)
 
-                                # TODO: debug
-                                print('Name received: ' + name)
-
                                 #TODO: validate name
 
                                 client = Client(name, tempSocket, self)
@@ -73,7 +70,7 @@ class vimServer:
                                     'type': 'message',
                                     'data': {
                                         'message_type': 'user_connected',
-                                        'user': self.user.toJson()
+                                        'user': client.toJson()
                                     }
                                 }
 
@@ -225,12 +222,11 @@ class Cursor:
         }
 
 class Client:
-    __slots__ = 'name', 'sock', 'server', 'cursor'
+    __slots__ = 'name', 'sock', 'cursor'
 
     def __init__(self, name, sock, server):
         self.name = name
         self.sock = sock
-        self.server = server
         self.cursor = Cursor()
 
     def toJson(self):

@@ -89,9 +89,6 @@ class EditorModel:
             self.isConnected = True
             self.send(self.name)
 
-            #TODO: debug
-            self.ui.printMessage('sent name')
-
             self.controller.startDaemonThread()
         elif (port != self.port) or (addr != self.addr):
             self.ui.printError('Different address/port already used. You need to restart to try new ones')
