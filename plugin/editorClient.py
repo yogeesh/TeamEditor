@@ -218,6 +218,11 @@ class EditorModel:
                 else:
                     self.ui.printError('Received unknown message_type: ' + str(data['message_type']))
             elif packet['type'] == 'update':
+                #TODO debug
+                print('Received update packet:')
+                time.sleep(5)
+                print(data)
+                time.sleep(10)
                 if 'buffer' in data.keys() and data['name'] != self.name:
                     b_data = data['buffer']
                     currentBuffer = self.ui.getCurrentBuffer()
