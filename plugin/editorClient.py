@@ -177,7 +177,7 @@ class EditorModel:
         else:
             return data
 
-    def __cleanData(data):
+    def __cleanData(self, data):
         badData = data.find("}{")
         if badData > -1:
             data = data[:badData + 1]
