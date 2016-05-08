@@ -116,8 +116,8 @@ class vimServer:
         for socI in range(1, len(self.clientList)):
             if self.clientList[socI] != socketX:
                 self.clientList[socI].sendall(data)
-                print "broadcasted!"
         """
+        print "broadcasted!"
 
     def checkOpenSocketConnections(self):
         return True
