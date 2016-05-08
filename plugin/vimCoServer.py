@@ -3,6 +3,11 @@ import sys
 import select
 import json
 import struct
+import argparse
+
+parser = argparse.ArgumentParser(description='Start a VimCo server')
+parser.add_argument('port', type=int, nargs='?', default=8555,
+                    help='Port number to run on')
 
 class vimServer:
 
@@ -99,4 +104,5 @@ class vimServer:
 
         
 if __name__ == "__main__":
-    vimServer(int(sys.argv[1]))
+    args = parser.parse_args()
+    server = vimServer(args.port)
