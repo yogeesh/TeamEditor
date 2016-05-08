@@ -76,7 +76,7 @@ class EditorModel:
         if self.connection is None:
             self.addr = addr
             self.port = port
-            #self.name = name
+            self.name = name
             self.prevBuffer = []
             self.cursorManager = CursorManager(self)
             self.ui.printMessage('Connecting...')
@@ -87,7 +87,7 @@ class EditorModel:
                 self.ui.printError('Unable to connect to server')
                 return
             self.isConnected = True
-            #self.send(self.name)
+            self.send(self.name)
 
             self.controller.startDaemonThread()
         elif (port != self.port) or (addr != self.addr):
@@ -101,7 +101,7 @@ class EditorModel:
                 self.ui.printError('Unable to connect to server')
                 return
             self.isConnected = True
-            #self.send(self.name)
+            self.send(self.name)
 
     def disconnect(self):
         if self.connection is not None:
@@ -203,7 +203,7 @@ class EditorModel:
                 """
                 if data['message_type'] == 'connect_success':
                     self.ui.setCursorColors()
-                    self.name = data['name']
+                    #self.name = data['name']
                     if 'buffer' in data.keys():
                         self.prevBuffer = data['buffer']
                         self.ui.setCurrentBuffer(self.prevBuffer)

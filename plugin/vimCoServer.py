@@ -36,32 +36,44 @@ class vimServer:
                     #new socket connection
                     if socket == serverSocket:
                         tempSocket, addr = serverSocket.accept()
-                        client = Client(str(tempSocket), self)
-                        self.clientManager.addClient(client)
-                        print('Client ' + str(tempSocket) + ' joined!')
 
-                        d = {
-                            'type': 'message',
-                            'data': {
-                                'message_type': 'connect_success',
-                                'name': str(client.id),
-                                'users': self.clientManager.allClientsToJson()
-                            }
-                        }
-                        if self.clientManager.isMulti():
-                            d['data']['buffer'] = self.buffer
+                        if messageLen is None:
+                            if len(data) == 4:
+                                messageLen = struct.unpack('>I', data)[0]
 
-                        self.send(int(client.id), json.dumps(d))
+                        if messageLen is not None:
+                            data = self.recvall(socket, messageLen)
+                            if len(data) == messageLen:
+                                name = str(data)
 
-                        d = {
-                            'type': 'message',
-                            'data': {
-                                'message_type': 'user_connected',
-                                'user': self.user.toJson()
-                            }
-                        }
+                                #TODO: validate name
 
-                        self.broadcastData(int(client.id), d)
+                                client = Client(name, tempSocket, self)
+                                self.clientManager.addClient(client)
+                                print('Client ' + client.name + ' joined!')
+
+                                d = {
+                                    'type': 'message',
+                                    'data': {
+                                        'message_type': 'connect_success',
+                                        'name': client.name,
+                                        'users': self.clientManager.allClientsToJson()
+                                    }
+                                }
+                                if self.clientManager.isMulti():
+                                    d['data']['buffer'] = self.buffer
+
+                                #self.send(int(client.name), json.dumps(d))
+
+                                d = {
+                                    'type': 'message',
+                                    'data': {
+                                        'message_type': 'user_connected',
+                                        'user': self.user.toJson()
+                                    }
+                                }
+
+                                self.broadcastData(client.sock, d)
                         
                     #existing socket recieving data
                     else:
@@ -69,13 +81,11 @@ class vimServer:
                         if messageLen is None:
                             if len(data) == 4:
                                 messageLen = struct.unpack('>I', data)[0]
-                                data = ''
 
                         if messageLen is not None:
                             data = self.recvall(socket, messageLen)
                             if len(data) == messageLen:
                                 self.processData(data)
-                                data = ''
                                 messageLen = None
 
                     #Checks if all connections are closed
@@ -94,10 +104,9 @@ class vimServer:
         Broadcast data to all clients except clientX
         """
         obj_json = json.dumps(data)
-        for id, client in self.clientManager.clients.iteritems():
-            sock = int(client.id)
-            if sock != socketX or sendToSelf:
-                self.send(sock, obj_json)
+        for name, client in self.clientManager.clients.iteritems():
+            if client.sock != socketX or sendToSelf:
+                self.send(client.sock, obj_json)
 
         """
         #Ignoring 1st socket, as it is dedicated to serverSocket
@@ -190,12 +199,12 @@ class vimServer:
 
         if 'buffer' in data.keys():
             b_data = data['buffer']
-            self.factory.buffer = self.factory.buffer[:b_data['start']] \
+            self.buffer = self.buffer[:b_data['start']] \
                                     + b_data['buffer'] \
-                                    + self.factory.buffer[b_data['end'] - b_data['change_y'] + 1:]
+                                    + self.buffer[b_data['end'] - b_data['change_y'] + 1:]
             packet['data']['updated_cursors'] += self.clientManager.updateCursors(b_data, client)
             updateSelf = True
-        self.broadcastData(client.id, packet, updateSelf)
+        self.broadcastData(client.sock, packet, updateSelf)
 
 
 class Cursor:
@@ -212,16 +221,17 @@ class Cursor:
         }
 
 class Client:
-    __slots__ = 'id', 'server', 'cursor'
+    __slots__ = 'name', 'sock', 'server', 'cursor'
 
-    def __init__(self, id, server):
-        self.id = id
+    def __init__(self, name, sock, server):
+        self.name = name
+        self.sock = sock
         self.server = server
         self.cursor = Cursor()
 
     def toJson(self):
         return {
-            'name': self.id,
+            'name': self.name,
             'cursor': self.cursor.toJson()
         }
 
@@ -243,30 +253,30 @@ class ClientManager:
     def isMulti(self):
         return len(self.clients) > 1
 
-    def hasClient(self, id):
-        return self.clients.get(id)
+    def hasClient(self, name):
+        return self.clients.get(name)
 
     def addClient(self, client):
-        self.clients[client.id] = client
+        self.clients[client.name] = client
 
-    def getClient(self, id):
+    def getClient(self, name):
         try:
-            return self.clients[id]
+            return self.clients[name]
         except KeyError:
-            raise Exception('Client ' + id + ' does not exist')
+            raise Exception('Client ' + name + ' does not exist')
 
     def removeClient(self, client):
-        if self.clients.get(client.id):
+        if self.clients.get(client.name):
             d = {
                 'type': 'message',
                 'data': {
                     'message_type': 'user_disconnected',
-                    'name': client.id
+                    'name': client.name
                 }
             }
-            self.server.broadcastPacket(client.id, d)
-            print 'Client "{user_name}" Disconnected'.format(user_name=client.id)
-            del self.clients[client.id]
+            self.server.broadcastPacket(client.name, d)
+            print 'Client "{user_name}" Disconnected'.format(user_name=client.name)
+            del self.clients[client.name]
 
     def allClientsToJson(self):
         return [client.toJson() for client in self.server.clientManager.clients.values()]
