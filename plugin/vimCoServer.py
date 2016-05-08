@@ -38,12 +38,12 @@ class vimServer:
                         tempSocket, addr = serverSocket.accept()
 
                         if messageLen is None:
-                            data = self.recvall(socket, 4)
+                            data = self.recvall(tempSocket, 4)
                             if len(data) == 4:
                                 messageLen = struct.unpack('>I', data)[0]
 
                         if messageLen is not None:
-                            data = self.recvall(socket, messageLen)
+                            data = self.recvall(tempSocket, messageLen)
                             if len(data) == messageLen:
                                 name = str(data)
 
