@@ -4,6 +4,10 @@ import time
 import socket
 import struct
 
+from vimPlatform import *
+from vimUI import *
+
+
 class CursorManager:
     __slots__ = 'nextCursorId', 'nextCursorColor', 'cursors', 'editorModel'
 
@@ -49,12 +53,13 @@ class EditorModel:
         self.ui = ui
 
     def createServer(self, port, name):
-        print('creating server')
         self.controller.platform.runServer(port)
-        time.sleep(10)
+        time.sleep(5)
         self.connect('localhost', port, name)
 
     def connect(self, addr, port, name):
+        print(VimCoServerPath)
+
         if self.isConnected is True:
             self.ui.printError('Already connected to a server. Please disconnect first')
             return
@@ -76,12 +81,12 @@ class EditorModel:
             self.name = name
             self.prevBuffer = []
             self.cursorManager = CursorManager(self)
-            #self.ui.printMessage('Connecting...')
+            self.ui.printMessage('Connecting...')
             self.connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             try:
                 self.connection.connect((addr, port))
             except socket.error:
-                #self.ui.printError('Unable to connect to server')
+                self.ui.printError('Unable to connect to server')
                 return
             self.isConnected = True
             self.send(self.name)
@@ -254,10 +259,6 @@ class EditorModel:
             data += packet
         print data
         return data
-
-
-from vimPlatform import *
-from vimUI import *
 
 class EditorController:
     __slots__ = 'daemonThread', 'runFlag', 'editorModel', 'platform', 'ui'
