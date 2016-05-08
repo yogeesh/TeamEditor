@@ -251,6 +251,7 @@ class EditorModel:
             if not packet:
                 return None
             data += packet
+        print data
         return data
 
 
@@ -315,6 +316,7 @@ class EditorController:
         messageLen = None
         data = ''
         while self.runFlag is True:
+            print "theard!"
             self.editorModel.connection.settimeout(0.01)    #10 ms
 
             if messageLen is None:
