@@ -77,6 +77,8 @@ class vimServer:
                                 }
 
                                 self.broadcastData(client.sock, d)
+
+                                messageLen = None
                         
                     #existing socket recieving data
                     else:
