@@ -153,6 +153,7 @@ class vimServer:
 
     def recvall(self, sock, n):
         # Helper function to recv n bytes or return None if EOF is hit
+        """
         data = ''
         while len(data) < n:
             try:
@@ -165,8 +166,11 @@ class vimServer:
             if not packet:
                 return None
             data += packet
+        """
+        data = sock.recv(n)
         print data
         return data
+
 
     def __toUtf8(self, data):
         if isinstance(data, dict):

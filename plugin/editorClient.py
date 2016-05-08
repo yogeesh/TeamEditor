@@ -87,7 +87,7 @@ class EditorModel:
                 self.ui.printError('Unable to connect to server')
                 return
             self.isConnected = True
-            self.send(self.name)
+            self.send(self.connection, self.name)
 
             self.controller.startDaemonThread()
         elif (port != self.port) or (addr != self.addr):
@@ -101,7 +101,7 @@ class EditorModel:
                 self.ui.printError('Unable to connect to server')
                 return
             self.isConnected = True
-            self.send(self.name)
+            self.send(self.connection, self.name)
 
     def disconnect(self):
         if self.connection is not None:
@@ -137,7 +137,7 @@ class EditorModel:
         }
         d = self.__createUpdatePacket(d)
         data = json.dumps(d)
-        self.send(data)
+        self.send(self.connection, data)
 
     def __createUpdatePacket(self, d):
         currentBuffer = self.ui.getCurrentBuffer()
@@ -238,30 +238,31 @@ class EditorModel:
                 self.ui.printError('Received unknown packet type: ' + str(packet['type']))
             self.ui.redraw()
 
-    def send(self, data):
+    def send(self, sock, data):
         # pack length of data along with it
         data = struct.pack('>I', len(data)) + data
         try:
-            self.connection.sendall(data)
+            sock.sendall(data)
         except socket.error:
             self.ui.printError('Socket error occurred when sending')
 
-    def recvall(self, n):
+    def recvall(self, sock, n):
         # Helper function to recv n bytes or return None if EOF is hit
+        """
         data = ''
         while len(data) < n:
             try:
-                packet = self.connection.recv(n - len(data))
+                packet = sock.recv(n - len(data))
             except socket.timeout:
-                # TODO: debug
-                #self.ui.printError('Timeout error occurred when receiving')
-                break
+                print('Timeout error occurred when receiving')
             except socket.error:
-                self.ui.printError('Socket error occurred when receiving')
+                print('Socket error occurred when receiving')
                 break
             if not packet:
                 return None
             data += packet
+        """
+        data = sock.recv(n)
         print data
         return data
 
@@ -326,12 +327,12 @@ class EditorController:
             self.editorModel.connection.settimeout(0.01)    #10 ms
 
             if messageLen is None:
-                data = self.editorModel.recvall(4)
+                data = self.editorModel.recvall(self.editorModel.connection, 4)
                 if len(data) == 4:
                     messageLen = struct.unpack('>I', data)[0]
 
             if messageLen is not None:
-                data = self.editorModel.recvall(messageLen)
+                data = self.editorModel.recvall(self.editorModel.connection, messageLen)
                 if len(data) == messageLen:
                     self.editorModel.processData(data)
                     messageLen = None
