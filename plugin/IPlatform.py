@@ -1,6 +1,8 @@
 from abc import ABCMeta, abstractmethod
 
-class IPlatform(metaclass=ABCMeta):
+class IPlatform(object):
+    __metaclass__ = ABCMeta
+
     @abstractmethod
     def getApplicationName(self):
         pass

@@ -1,6 +1,8 @@
 from abc import ABCMeta, abstractmethod
 
-class IEditorView(metaclass=ABCMeta):
+class IEditorView(object):
+    __metaclass__ = ABCMeta
+
     @abstractmethod
     def getCursorX(self):
         pass
