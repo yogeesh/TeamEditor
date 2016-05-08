@@ -65,14 +65,14 @@ class vimServer:
                         
                     #existing socket recieving data
                     else:
-                        data = self.recvall(data, 4)
+                        data = self.recvall(socket, 4)
                         if messageLen is None:
                             if len(data) == 4:
                                 messageLen = struct.unpack('>I', data)[0]
                                 data = ''
 
                         if messageLen is not None:
-                            data = self.recvall(socket, data, messageLen)
+                            data = self.recvall(socket, messageLen)
                             if len(data) == messageLen:
                                 self.processData(data)
                                 data = ''
@@ -138,20 +138,21 @@ class vimServer:
         except socket.error:
             print('Socket error occurred when sending')
 
-    def recvall(self, sock, data, n):
+    def recvall(self, sock, n):
         # Helper function to recv n bytes or return None if EOF is hit
+        data = ''
         while len(data) < n:
             try:
                 packet = sock.recv(n - len(self.data))
             except socket.timeout:
-                break
+                print('Timeout error occurred when receiving')
             except socket.error:
                 print('Socket error occurred when receiving')
                 break
             if not packet:
                 return None
             data += packet
-        #print data
+        print data
         return data
 
     def __toUtf8(self, data):

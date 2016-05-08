@@ -246,12 +246,14 @@ class EditorModel:
         except socket.error:
             self.ui.printError('Socket error occurred when sending')
 
-    def recvall(self, data, n):
+    def recvall(self, n):
         # Helper function to recv n bytes or return None if EOF is hit
+        data = ''
         while len(data) < n:
             try:
                 packet = self.connection.recv(n - len(self.data))
             except socket.timeout:
+                self.ui.printError('Timeout error occurred when receiving')
                 break
             except socket.error:
                 self.ui.printError('Socket error occurred when receiving')
@@ -259,7 +261,7 @@ class EditorModel:
             if not packet:
                 return None
             data += packet
-        #print data
+        print data
         return data
 
 class EditorController:
@@ -324,16 +326,14 @@ class EditorController:
             self.editorModel.connection.settimeout(0.01)    #10 ms
 
             if messageLen is None:
-                data = self.editorModel.recvall(data, 4)
+                data = self.editorModel.recvall(4)
                 if len(data) == 4:
                     messageLen = struct.unpack('>I', data)[0]
-                    data = ''
 
             if messageLen is not None:
-                data = self.editorModel.recvall(data, messageLen)
+                data = self.editorModel.recvall(messageLen)
                 if len(data) == messageLen:
                     self.editorModel.processData(data)
-                    data = ''
                     messageLen = None
 
             self.editorModel.connection.settimeout(None)
