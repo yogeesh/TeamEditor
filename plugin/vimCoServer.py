@@ -64,7 +64,7 @@ class vimServer:
                                 if self.clientManager.isMulti():
                                     d['data']['buffer'] = self.buffer
 
-                                #self.send(int(client.name), json.dumps(d))
+                                self.send(client.sock, json.dumps(d))
 
                                 d = {
                                     'type': 'message',
@@ -74,7 +74,7 @@ class vimServer:
                                     }
                                 }
 
-                                self.broadcastData(client.sock, d)
+                                self.broadcastData(client.name, d)
 
                                 messageLen = None
                         
@@ -102,13 +102,13 @@ class vimServer:
                 pass
 
 
-    def broadcastData(self, socketX, data, sendToSelf=False):
+    def broadcastData(self, clientX, data, sendToSelf=False):
         """
         Broadcast data to all clients except clientX
         """
         obj_json = json.dumps(data)
         for name, client in self.clientManager.clients.iteritems():
-            if client.sock != socketX or sendToSelf:
+            if client.name != clientX or sendToSelf:
                 self.send(client.sock, obj_json)
 
         """
@@ -209,7 +209,7 @@ class vimServer:
                                     + self.buffer[b_data['end'] - b_data['change_y'] + 1:]
             packet['data']['updated_cursors'] += self.clientManager.updateCursors(b_data, client)
             updateSelf = True
-        self.broadcastData(client.sock, packet, updateSelf)
+        self.broadcastData(client.name, packet, updateSelf)
 
 
 class Cursor:
@@ -283,14 +283,14 @@ class ClientManager:
             del self.clients[client.name]
 
     def allClientsToJson(self):
-        return [client.to_json() for client in self.server.clientManager.clients.values()]
+        return [client.to_json() for client in self.clients.values()]
 
     def updateCursors(self, data, c):
         result = []
         y_target = c.cursor.y
         x_target = c.cursor.x
 
-        for client in self.server.clientManager.clients.values():
+        for client in self.clients.values():
             updated = False
             if client != c:
                 if client.cursor.y > y_target:
