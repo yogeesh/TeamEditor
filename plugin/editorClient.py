@@ -119,7 +119,12 @@ class EditorModel:
         map(self.__addUser, users)
 
     def __addUser(self, userData):
-        self.cursorManager.addCursor(userData['name'], userData['cursor']['x'], userData['cursor']['y'])
+        try:
+            self.cursorManager.addCursor(userData['name'], userData['cursor']['x'], userData['cursor']['y'])
+        except TypeError:
+            print('TypeError')
+            print(userData)
+            exit()
 
     def __removeUser(self, name):
         self.cursorManager.removeCursor(name)
