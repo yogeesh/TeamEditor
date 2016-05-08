@@ -58,8 +58,6 @@ class EditorModel:
         self.connect('localhost', port, name)
 
     def connect(self, addr, port, name):
-        print(VimCoServerPath)
-
         if self.isConnected is True:
             self.ui.printError('Already connected to a server. Please disconnect first')
             return
@@ -78,7 +76,7 @@ class EditorModel:
         if self.connection is None:
             self.addr = addr
             self.port = port
-            self.name = name
+            #self.name = name
             self.prevBuffer = []
             self.cursorManager = CursorManager(self)
             self.ui.printMessage('Connecting...')
@@ -89,7 +87,7 @@ class EditorModel:
                 self.ui.printError('Unable to connect to server')
                 return
             self.isConnected = True
-            self.send(self.name)
+            #self.send(self.name)
 
             self.controller.startDaemonThread()
         elif (port != self.port) or (addr != self.addr):
@@ -103,7 +101,7 @@ class EditorModel:
                 self.ui.printError('Unable to connect to server')
                 return
             self.isConnected = True
-            self.send(self.name)
+            #self.send(self.name)
 
     def disconnect(self):
         if self.connection is not None:
@@ -112,7 +110,7 @@ class EditorModel:
                     self.ui.removeCursor(self.cursorManager.cursors[name][1])
             self.connection.close()
             self.isConnected = False
-            self.controller.stop()
+            self.controller.stopDaemonThread()
             self.ui.printMessage('Successfully disconnected from the server!')
         else:
             self.ui.printError(self.platform.getApplicationName() + " must be running to use this command")
@@ -173,7 +171,7 @@ class EditorModel:
                 d2[self.__toUtf8(key)] = self.__toUtf8(value)
             return d2
         elif isinstance(data, list):
-            return map(self.to_utf8, data)
+            return map(self.__toUtf8, data)
         elif isinstance(data, unicode):
             return data.encode('utf-8')
         else:
@@ -192,6 +190,7 @@ class EditorModel:
         if 'type' in packet.keys():
             data = packet['data']
             if packet['type'] == 'message':
+                """
                 if data['message_type'] == 'error_newname_taken':
                     self.disconnect()
                     self.ui.printError('Name already in use. Please try a different name')
@@ -200,8 +199,11 @@ class EditorModel:
                     self.ui.printError(
                         'Name contains illegal characters. Only numbers, letters, underscores, and dashes allowed. ' + \
                         'Please try a different name')
-                elif data['message_type'] == 'connect_success':
+                el
+                """
+                if data['message_type'] == 'connect_success':
                     self.ui.setCursorColors()
+                    self.name = data['name']
                     if 'buffer' in data.keys():
                         self.prevBuffer = data['buffer']
                         self.ui.setCurrentBuffer(self.prevBuffer)
@@ -248,7 +250,7 @@ class EditorModel:
         # Helper function to recv n bytes or return None if EOF is hit
         while len(data) < n:
             try:
-                packet = self.recv(n - len(self.data))
+                packet = self.connection.recv(n - len(self.data))
             except socket.timeout:
                 break
             except socket.error:
@@ -257,7 +259,7 @@ class EditorModel:
             if not packet:
                 return None
             data += packet
-        print data
+        #print data
         return data
 
 class EditorController:
@@ -310,7 +312,7 @@ class EditorController:
         self.daemonThread = Thread(target=self.__run)
         self.daemonThread.start()
 
-    def stop(self):
+    def stopDaemonThread(self):
         self.runFlag = False
 
     def __run(self):
