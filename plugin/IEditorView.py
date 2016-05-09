@@ -58,3 +58,7 @@ class IEditorView(object):
     @abstractmethod
     def removeCursor(self, cursorId):
         pass
+
+    @abstractmethod
+    def updateCursor(self, cursorId, cursorColor, x, y):
+        pass

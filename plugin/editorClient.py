@@ -34,8 +34,7 @@ class CursorManager:
         del (self.cursors[name])
 
     def updateCursor(self, name, x, y):
-        self.editorModel.ui.removeCursor(self.cursors[name][1])
-        self.editorModel.ui.addCursor(self.cursors[name][1], self.cursors[name][0], x, y)
+        self.editorModel.ui.updateCursor(self.cursors[name][1], self.cursors[name][0], x, y)
 
 
 class EditorModel:

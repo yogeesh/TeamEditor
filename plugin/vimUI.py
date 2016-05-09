@@ -44,3 +44,7 @@ class VimUI(IEditorView):
 
     def removeCursor(self, cursorId):
         vim.command(':call matchdelete(' + str(cursorId + 3) + ')')
+
+    def updateCursor(self, cursorId, cursorColor, x, y):
+        self.removeCursor(cursorId)
+        self.addCursor(cursorId, cursorColor, x, y)
