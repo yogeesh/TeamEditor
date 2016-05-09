@@ -86,6 +86,7 @@ class EditorServer:
                             if data is None:
                                 self.clientManager.removeClient(self.clientManager.getClientBySock(socket))
                                 if socket in self.socketList: self.socketList.remove(socket)
+                                if len(self.socketList) == 1: return
                             elif len(data) == 4:
                                 messageLen = struct.unpack('>I', data)[0]
 
@@ -94,20 +95,15 @@ class EditorServer:
                             if data is None:
                                 self.clientManager.removeClient(self.clientManager.getClientBySock(socket))
                                 if socket in self.socketList: self.socketList.remove(socket)
+                                if len(self.socketList) == 1: return
                             elif len(data) == messageLen:
                                 self.processData(data)
                                 messageLen = None
-
-                    #Checks if all connections are closed
-                    if(self.checkOpenSocketConnections()):
-                        continue
-                    else:
-                        return
                     
             except select.error:
                 #TODO
                 print('Socket error')
-
+                
 
     def broadcastData(self, clientX, data, sendToSelf=False):
         """
@@ -117,9 +113,6 @@ class EditorServer:
         for name, client in self.clientManager.clientsByName.iteritems():
             if client.name != clientX or sendToSelf:
                 self.send(client.sock, obj_json)
-
-    def checkOpenSocketConnections(self):
-        return True
 
     def send(self, sock, data):
         # pack length of data along with it
