@@ -169,9 +169,9 @@ class EditorModel:
             return data
 
     def __cleanData(self, data):
-        badData = data.find("}{")
-        if badData > -1:
-            data = data[:badData + 1]
+        dirtyData = data.find("}{")
+        if dirtyData > -1:
+            data = data[:dirtyData + 1]
         return data
 
     def processData(self, data_string):
