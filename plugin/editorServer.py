@@ -62,7 +62,7 @@ class EditorServer:
 
                                 #TODO: validate name
 
-                                client = Client(name, clientSocket, self)
+                                client = Client(name, clientSocket)
                                 self.clientManager.addClient(client)
                                 print('Client ' + client.name + ' joined!')
 
