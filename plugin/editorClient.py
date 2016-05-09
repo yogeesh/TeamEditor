@@ -107,9 +107,9 @@ class EditorModel:
             for name in self.cursorManager.cursors.keys():
                 if name != self.name:
                     self.ui.removeCursor(self.cursorManager.cursors[name][1])
+            self.controller.stopDaemonThread()
             self.connection.close()
             self.isConnected = False
-            self.controller.stopDaemonThread()
             self.ui.printMessage('Successfully disconnected from the server!')
         else:
             self.ui.printError(self.platform.getApplicationName() + " must be running to use this command")
@@ -314,6 +314,7 @@ class EditorController:
 
     def stopDaemonThread(self):
         self.runFlag = False
+        self.daemonThread.join()
 
     def __run(self):
         begin = time.time()
