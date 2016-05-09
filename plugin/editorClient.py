@@ -312,9 +312,7 @@ class EditorModel:
                     # set our own cursor first
                     for updated_user in data['updated_cursors']:
                         if self.name == updated_user['name'] and data['name'] != self.name:
-                            oldX, oldY = self.ui.getCursor()
-                            if oldX != updated_user['cursor']['x'] or oldY != updated_user['cursor']['y']:
-                                self.ui.setCursor(updated_user['cursor']['x'], updated_user['cursor']['y'])
+                            self.ui.setCursor(updated_user['cursor']['x'], updated_user['cursor']['y'])
 
                     # then set others' cursors
                     for updated_user in data['updated_cursors']:
