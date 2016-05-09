@@ -266,7 +266,7 @@ class ClientManager:
                     'name': client.name
                 }
             }
-            self.server.broadcastPacket(client.name, d)
+            self.server.broadcastData(client.name, d)
             print('Client ' + client.name + ' disconnected')
             del self.clientsByName[client.name]
             del self.clientsBySock[client.sock]
