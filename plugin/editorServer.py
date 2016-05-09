@@ -5,7 +5,9 @@ import json
 import struct
 
 class EditorServer:
-
+    """
+    The server of the collaborative text editor
+    """
     __slots__ = 'socketList', 'buffer', 'clientManager'
     
     def __init__(self, port):
@@ -227,7 +229,7 @@ class EditorServer:
     def processData(self, data_string):
         """
         Process the received data and take actions
-        :param data_string: the unprocessed data received
+        :param data_string: the raw unprocessed data received
         :return: None
         """
         data_string = self.__cleanData(data_string)
@@ -256,6 +258,9 @@ class EditorServer:
 
 
 class Cursor:
+    """
+    The cursor
+    """
     __slots__ = 'x', 'y'
 
     def __init__(self):
@@ -276,6 +281,9 @@ class Cursor:
         }
 
 class Client:
+    """
+    The client
+    """
     __slots__ = 'name', 'sock', 'cursor'
 
     def __init__(self, name, sock):
@@ -310,6 +318,9 @@ class Client:
 
 
 class ClientManager:
+    """
+    The client manager
+    """
     __slots__ = 'clientsByName', 'clientsBySock'
 
     def __init__(self, server):

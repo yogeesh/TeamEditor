@@ -2,6 +2,9 @@ import vim
 from IEditorView import *
 
 class VimUI(IEditorView):
+    """
+    The vim user interface
+    """
     def getCursorX(self):
         return vim.current.window.cursor[1]
 

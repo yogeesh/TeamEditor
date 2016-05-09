@@ -1,10 +1,13 @@
 import vim
 from IPlatform import *
 
-# Find the server path
+# The server path
 serverPath = vim.eval('expand("<sfile>:h")') + '/editorServer.py'
 
 class VimPlatform(IPlatform):
+    """
+    The vim platform
+    """
     def getApplicationName(self):
         return "VimCo"
 

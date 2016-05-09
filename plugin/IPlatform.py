@@ -1,6 +1,9 @@
 from abc import ABCMeta, abstractmethod
 
 class IPlatform(object):
+    """
+    Interface for the platform
+    """
     __metaclass__ = ABCMeta
 
     @abstractmethod

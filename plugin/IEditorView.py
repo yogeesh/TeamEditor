@@ -1,6 +1,9 @@
 from abc import ABCMeta, abstractmethod
 
 class IEditorView(object):
+    """
+    Interface for the User Interface of the text editor
+    """
     __metaclass__ = ABCMeta
 
     @abstractmethod
