@@ -324,12 +324,16 @@ class EditorController:
 
             if messageLen is None:
                 data = self.editorModel.recvall(self.editorModel.connection, 4)
-                if len(data) == 4:
+                if data is None:
+                    break
+                elif len(data) == 4:
                     messageLen = struct.unpack('>I', data)[0]
 
             if messageLen is not None:
                 data = self.editorModel.recvall(self.editorModel.connection, messageLen)
-                if len(data) == messageLen:
+                if data is None:
+                    break
+                elif len(data) == messageLen:
                     self.editorModel.processData(data)
                     messageLen = None
 
