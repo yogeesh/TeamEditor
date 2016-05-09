@@ -90,17 +90,7 @@ class EditorModel:
 
             self.controller.startDaemonThread()
         elif (port != self.port) or (addr != self.addr):
-            self.ui.printError('Different address/port already used. You need to restart to try new ones')
-        else:
-            self.cursorManager.reset()
-            self.ui.printMessage('Reconnecting...')
-            try:
-                self.connection.connect((addr, port))
-            except socket.error:
-                self.ui.printError('Unable to connect to server')
-                return
-            self.isConnected = True
-            self.send(self.connection, self.name)
+            self.ui.printError('Different address,port already used. You need to restart to try new ones')
 
     def disconnect(self):
         if self.connection is not None:
@@ -109,10 +99,12 @@ class EditorModel:
                     self.ui.removeCursor(self.cursorManager.cursors[name][1])
             self.controller.stopDaemonThread()
             self.connection.close()
+            self.connection = None
             self.isConnected = False
+            self.cursorManager.reset()
             self.ui.printMessage('Successfully disconnected from the server!')
         else:
-            self.ui.printError(self.platform.getApplicationName() + " must be running to use this command")
+            self.ui.printError(self.platform.getApplicationName() + ' must be running to use this command')
 
     def __addUsers(self, users):
         map(self.__addUser, users)
