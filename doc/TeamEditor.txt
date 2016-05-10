@@ -1,0 +1,27 @@
+*TeamEditor.txt* A short multi line description of your plugin
+
+===============================================================================
+CONTENTS                                                                *TeamEditor*
+
+    1. Intro .................................................... |TeamEditor-intro|
+    2. Requirements ...................................... |TeamEditor-requirements|
+    3. Usage .................................................... |TeamEditor-usage|
+    4. Licence ................................................ |TeamEditor-licence|
+===============================================================================
+1. Intro                                                          *TeamEditor-intro*
+
+Overview of plugin
+
+2. Requirements                                            *TeamEditor-requirements*
+
+What additional programs are required to run the plugin
+
+3. Usage                                                          *TeamEditor-usage*
+
+How to use the plugin. What functions does it give the user?
+
+4. Licence                                                      *TeamEditor-licence*
+
+This is open source make sure to include a licence
+
+vim:ft=help
