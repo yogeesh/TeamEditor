@@ -1,5 +1,5 @@
 import vim
-from IPlatform import *
+from iPlatform import *
 
 # The server path
 serverPath = vim.eval('expand("<sfile>:h")') + '/editorServer.py'

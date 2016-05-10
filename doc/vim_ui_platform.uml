@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>Python</ID>
+  <OriginalElement>#/home/pxk5958/workspace/TeamEditor/plugin/vimUI.py</OriginalElement>
+  <nodes>
+    <node x="0.0" y="374.0">plugin.iEditorView.IEditorView</node>
+    <node x="10.0" y="790.0">plugin.vimUI.VimUI</node>
+    <node x="140.75" y="0.0">abc.ABCMeta</node>
+    <node x="489.0" y="905.5">plugin.vimPlatform.VimPlatform</node>
+    <node x="479.0" y="489.5">plugin.iPlatform.IPlatform</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="plugin.iPlatform.IPlatform" target="abc.ABCMeta">
+      <point x="0.0" y="-67.5" />
+      <point x="627.0" y="349.0" />
+      <point x="572.0" y="349.0" />
+      <point x="143.75" y="162.0" />
+    </edge>
+    <edge source="plugin.vimPlatform.VimPlatform" target="plugin.iPlatform.IPlatform">
+      <point x="0.0" y="-56.5" />
+      <point x="0.0" y="67.5" />
+    </edge>
+    <edge source="plugin.iEditorView.IEditorView" target="abc.ABCMeta">
+      <point x="0.0" y="-183.0" />
+      <point x="229.5" y="349.0" />
+      <point x="284.5" y="349.0" />
+      <point x="-143.75" y="162.0" />
+    </edge>
+    <edge source="plugin.vimUI.VimUI" target="plugin.iEditorView.IEditorView">
+      <point x="0.0" y="-172.0" />
+      <point x="0.0" y="183.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.7357019064124783" x="387.5" y="567.0" />
+  <SelectedNodes>
+    <node>plugin.vimUI.VimUI</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Methods</Category>
+  </Categories>
+</Diagram>
+

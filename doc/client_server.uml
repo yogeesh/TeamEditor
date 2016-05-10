@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>Python</ID>
+  <OriginalElement>#/home/pxk5958/workspace/TeamEditor/plugin/editorClient.py</OriginalElement>
+  <nodes>
+    <node x="776.2167255594817" y="1.5924617196702684">plugin.editorClient.EditorController</node>
+    <node x="0.0" y="0.0">plugin.editorClient.EditorModel</node>
+    <node x="875.104829210836" y="605.2897526501768">plugin.editorServer.Client</node>
+    <node x="763.6631330977622" y="314.03533568904595">plugin.editorClient.CursorManager</node>
+    <node x="411.37455830388694" y="605.0270906949353">plugin.editorServer.ClientManager</node>
+    <node x="875.7903415783272" y="807.8480565371025">plugin.editorServer.Cursor</node>
+    <node x="0.0" y="600.0">plugin.editorServer.EditorServer</node>
+  </nodes>
+  <notes />
+  <edges />
+  <settings layout="Hierarchic Group" zoom="0.8543531326281529" x="604.5" y="471.5" />
+  <SelectedNodes>
+    <node>plugin.editorClient.CursorManager</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Methods</Category>
+    <Category>Fields</Category>
+  </Categories>
+</Diagram>
+

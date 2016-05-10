@@ -1,5 +1,5 @@
 import vim
-from IEditorView import *
+from iEditorView import *
 
 class VimUI(IEditorView):
     """
