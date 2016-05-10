@@ -128,7 +128,10 @@ class EditorModel:
             self.addr = addr
             self.port = port
             self.name = name
-            self.prevBuffer = []
+            if self.isHost is True:
+                self.prevBuffer = self.ui.getCurrentBuffer()
+            else:
+                self.prevBuffer = []
             self.cursorManager = CursorManager(self)
             self.ui.printMessage('Connecting...')
             self.connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -290,10 +293,8 @@ class EditorModel:
                 """
                 if data['message_type'] == 'connect_success':
                     self.ui.setCursorColors()
-                    if self.isHost is True:
-                        # if host has connected to server, don't reset the text buffer
-                        self.prevBuffer = self.ui.getCurrentBuffer()
-                    elif 'buffer' in data.keys():
+                    # if host has connected to server, don't reset the text buffer
+                    if self.isHost is False and 'buffer' in data.keys():
                         self.prevBuffer = data['buffer']
                         self.ui.setCurrentBuffer(self.prevBuffer)
                     self.ui.printMessage('Success! You\'re now connected [Port ' + str(self.port) + ']')
