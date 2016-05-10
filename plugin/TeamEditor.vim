@@ -5,7 +5,7 @@ python import sys
 python import vim
 python sys.path.append(vim.eval('expand("<sfile>:h")'))
 
-com! -nargs=* VimCo py vimCo.execute(<f-args>)
+com! -nargs=* TeamEditor py teamEditor.execute(<f-args>)
 
 " --------------------------------
 "  Function(s)
@@ -28,11 +28,11 @@ endfunction
 
 
 
-if !exists("VimCo_default_name")
-    let VimCo_default_name = 0
+if !exists("TeamEditor_default_name")
+    let TeamEditor_default_name = 0
 endif
-if !exists("VimCo_default_port")
-    let VimCo_default_port = 0
+if !exists("TeamEditor_default_port")
+    let TeamEditor_default_port = 0
 endif
 
 
@@ -44,6 +44,6 @@ python << endOfPython
 ###
 from editorClient import *
 
-vimCo = EditorController()
+teamEditor = EditorController()
 
 endOfPython
