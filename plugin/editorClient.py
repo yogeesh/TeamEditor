@@ -71,7 +71,7 @@ class EditorModel:
     """
     The collaborative text editor client model
     """
-    __slots__ = 'addr', 'port', 'name', 'prevBuffer', 'isConnected', 'connection', 'cursorManager', 'controller', 'ui'
+    __slots__ = 'addr', 'port', 'name', 'isHost' 'prevBuffer', 'isConnected', 'connection', 'cursorManager', 'controller', 'ui'
 
     def __init__(self, controller, ui):
         """
@@ -84,6 +84,7 @@ class EditorModel:
         self.addr = None
         self.port = None
         self.name = None
+        self.isHost = False
         self.prevBuffer = None
         self.cursorManager = None
         self.controller = controller
@@ -98,6 +99,7 @@ class EditorModel:
         """
         self.controller.platform.runServer(port)
         time.sleep(1)
+        self.isHost = True
         self.connect('localhost', port, name)
 
     def connect(self, addr, port, name):
@@ -155,6 +157,7 @@ class EditorModel:
             self.connection.close()
             self.connection = None
             self.isConnected = False
+            self.isHost = False
             self.cursorManager.reset()
             self.ui.printMessage('Successfully disconnected from the server!')
         else:
@@ -287,7 +290,10 @@ class EditorModel:
                 """
                 if data['message_type'] == 'connect_success':
                     self.ui.setCursorColors()
-                    if 'buffer' in data.keys():
+                    if self.isHost is True:
+                        # if host has connected to server, don't reset the text buffer
+                        self.prevBuffer = self.ui.getCurrentBuffer()
+                    elif 'buffer' in data.keys():
                         self.prevBuffer = data['buffer']
                         self.ui.setCurrentBuffer(self.prevBuffer)
                     self.ui.printMessage('Success! You\'re now connected [Port ' + str(self.port) + ']')
