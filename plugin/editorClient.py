@@ -128,10 +128,7 @@ class EditorModel:
             self.addr = addr
             self.port = port
             self.name = name
-            if self.isHost is True:
-                self.prevBuffer = self.ui.getCurrentBuffer()
-            else:
-                self.prevBuffer = []
+            self.prevBuffer = []
             self.cursorManager = CursorManager(self)
             self.ui.printMessage('Connecting...')
             self.connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -296,7 +293,7 @@ class EditorModel:
                     # if host has connected to server, don't reset the text buffer
                     if self.isHost is False and 'buffer' in data.keys():
                         self.prevBuffer = data['buffer']
-                    self.ui.setCurrentBuffer(self.prevBuffer)
+                        self.ui.setCurrentBuffer(self.prevBuffer)
                     self.ui.printMessage('Success! You\'re now connected [Port ' + str(self.port) + ']')
                     self.__addUsers(data['users'])
                 elif data['message_type'] == 'user_connected':
