@@ -296,7 +296,7 @@ class EditorModel:
                     # if host has connected to server, don't reset the text buffer
                     if self.isHost is False and 'buffer' in data.keys():
                         self.prevBuffer = data['buffer']
-                        self.ui.setCurrentBuffer(self.prevBuffer)
+                    self.ui.setCurrentBuffer(self.prevBuffer)
                     self.ui.printMessage('Success! You\'re now connected [Port ' + str(self.port) + ']')
                     self.__addUsers(data['users'])
                 elif data['message_type'] == 'user_connected':
