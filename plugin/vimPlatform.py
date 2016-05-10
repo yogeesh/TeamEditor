@@ -18,4 +18,4 @@ class VimPlatform(IPlatform):
         return vim.eval('TeamEditor_default_port')
 
     def runServer(self, port):
-        vim.command(':silent execute "!python ' + serverPath + ' ' + port + ' &>/dev/null &"')
+        vim.command(':silent execute "!python ' + serverPath + ' ' + port + ' &>/dev/null &" | redraw')
