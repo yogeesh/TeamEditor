@@ -15,8 +15,3 @@ Use your plugin manager of choice.
 - [vim-plug](https://github.com/junegunn/vim-plug)
   - Add `Plug 'https://github.com/yogeesh/TeamEditor'` to .vimrc
   - Run `:PlugInstall`
-
-## Todo
-
-1. Write a plugin
-2. Write documentation
