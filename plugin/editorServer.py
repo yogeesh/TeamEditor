@@ -23,7 +23,7 @@ class EditorServer:
 
         # Bind to server port and listen
         listenSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        listenSocket.bind(("localhost", port))
+        listenSocket.bind(("", port))
         listenSocket.listen(10)
 
         # List of sockets whose states have to be checked
